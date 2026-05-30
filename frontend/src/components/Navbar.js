@@ -14,15 +14,18 @@ function Navbar({ user, onLogout }) {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex gap-6 items-center">
+          <div className="hidden md:flex gap-4 items-center">
+            <Link to="/about" className="text-gray-300 hover:text-purple-400 transition">About</Link>
+            <Link to="/contact" className="text-gray-300 hover:text-purple-400 transition">Contact</Link>
+            
             {user ? (
               <>
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center text-sm font-bold">
+                <Link to="/profile" className="flex items-center gap-2 px-4 py-2 bg-gray-800 rounded-lg hover:bg-gray-700 transition">
+                  <div className="w-6 h-6 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center text-xs font-bold">
                     {user.name.charAt(0).toUpperCase()}
                   </div>
-                  <span className="text-gray-300 font-medium">{user.name}</span>
-                </div>
+                  <span className="text-gray-300 font-medium">Profile</span>
+                </Link>
 
                 {user.isAdmin && (
                   <Link
@@ -70,9 +73,17 @@ function Navbar({ user, onLogout }) {
         {/* Mobile Navigation */}
         {isOpen && (
           <div className="md:hidden pb-4 space-y-2 border-t border-purple-500/20 pt-4">
+            <Link to="/about" className="block px-4 py-2 text-gray-300 hover:text-purple-400">
+              About
+            </Link>
+            <Link to="/contact" className="block px-4 py-2 text-gray-300 hover:text-purple-400">
+              Contact
+            </Link>
             {user ? (
               <>
-                <div className="px-4 py-2 text-gray-300">{user.name}</div>
+                <Link to="/profile" className="block px-4 py-2 text-purple-400 hover:text-purple-300">
+                  Profile
+                </Link>
                 {user.isAdmin && (
                   <Link to="/admin" className="block px-4 py-2 text-purple-400 hover:text-purple-300">
                     Admin Panel

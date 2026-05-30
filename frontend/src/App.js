@@ -1,11 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Navbar from './components/Navbar';
+import Footer from './components/Footer';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import AdminPanel from './pages/AdminPanel';
 import VideoPlayer from './pages/VideoPlayer';
+import Profile from './pages/Profile';
+import About from './pages/About';
+import Contact from './pages/Contact';
+import NotFound from './pages/NotFound';
 import './App.css';
 
 function App() {
@@ -13,10 +18,8 @@ function App() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Check if user is logged in
     const token = localStorage.getItem('token');
     if (token) {
-      // Verify token and get user
       fetchUser();
     } else {
       setLoading(false);
@@ -57,14 +60,23 @@ function App() {
 
   return (
     <Router>
-      <Navbar user={user} onLogout={handleLogout} />
-      <Routes>
-        <Route path="/" element={<Home user={user} />} />
-        <Route path="/login" element={user ? <Navigate to="/" /> : <Login onLogin={handleLogin} />} />
-        <Route path="/register" element={user ? <Navigate to="/" /> : <Register onLogin={handleLogin} />} />
-        <Route path="/admin" element={user?.isAdmin ? <AdminPanel /> : <Navigate to="/" />} />
-        <Route path="/video/:id" element={<VideoPlayer user={user} />} />
-      </Routes>
+      <div className="flex flex-col min-h-screen">
+        <Navbar user={user} onLogout={handleLogout} />
+        <main className="flex-grow">
+          <Routes>
+            <Route path="/" element={<Home user={user} />} />
+            <Route path="/login" element={user ? <Navigate to="/" /> : <Login onLogin={handleLogin} />} />
+            <Route path="/register" element={user ? <Navigate to="/" /> : <Register onLogin={handleLogin} />} />
+            <Route path="/admin" element={user?.isAdmin ? <AdminPanel /> : <Navigate to="/" />} />
+            <Route path="/video/:id" element={<VideoPlayer user={user} />} />
+            <Route path="/profile" element={<Profile user={user} onLogout={handleLogout} />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </main>
+        <Footer />
+      </div>
     </Router>
   );
 }
