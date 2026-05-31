@@ -1,16 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Navbar from './components/Navbar';
-import Footer from './components/Footer';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import AdminPanel from './pages/AdminPanel';
 import VideoPlayer from './pages/VideoPlayer';
-import Profile from './pages/Profile';
-import About from './pages/About';
-import Contact from './pages/Contact';
-import NotFound from './pages/NotFound';
 import './App.css';
 
 function App() {
@@ -55,12 +50,16 @@ function App() {
   };
 
   if (loading) {
-    return <div className="flex items-center justify-center h-screen">Loading...</div>;
+    return (
+      <div className="flex items-center justify-center h-screen bg-gradient-to-b from-gray-900 to-black">
+        <div className="spinner"></div>
+      </div>
+    );
   }
 
   return (
     <Router>
-      <div className="flex flex-col min-h-screen">
+      <div className="flex flex-col min-h-screen bg-gradient-to-b from-gray-900 to-black">
         <Navbar user={user} onLogout={handleLogout} />
         <main className="flex-grow">
           <Routes>
@@ -69,13 +68,9 @@ function App() {
             <Route path="/register" element={user ? <Navigate to="/" /> : <Register onLogin={handleLogin} />} />
             <Route path="/admin" element={user?.isAdmin ? <AdminPanel /> : <Navigate to="/" />} />
             <Route path="/video/:id" element={<VideoPlayer user={user} />} />
-            <Route path="/profile" element={<Profile user={user} onLogout={handleLogout} />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="*" element={<NotFound />} />
+            <Route path="*" element={<Navigate to="/" />} />
           </Routes>
         </main>
-        <Footer />
       </div>
     </Router>
   );

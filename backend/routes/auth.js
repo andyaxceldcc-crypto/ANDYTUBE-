@@ -7,8 +7,8 @@ const router = express.Router();
 
 // Register
 router.post('/register', [
-  body('name').isLength({ min: 3 }),
-  body('email').isEmail(),
+  body('name').isLength({ min: 3 }).trim(),
+  body('email').isEmail().normalizeEmail(),
   body('password').isLength({ min: 6 })
 ], async (req, res) => {
   const errors = validationResult(req);
@@ -22,7 +22,7 @@ router.post('/register', [
     // Check if user exists
     let user = await User.findOne({ email });
     if (user) {
-      return res.status(400).json({ msg: 'User already exists' });
+      return res.status(400).json({ msg: 'El usuario ya existe' });
     }
 
     // Create new user
@@ -37,11 +37,11 @@ router.post('/register', [
     // Create JWT token
     const token = jwt.sign(
       { userId: user._id },
-      process.env.JWT_SECRET,
+      process.env.JWT_SECRET || 'default_secret',
       { expiresIn: '7d' }
     );
 
-    res.json({
+    res.status(201).json({
       token,
       user: {
         id: user._id,
@@ -51,6 +51,7 @@ router.post('/register', [
       }
     });
   } catch (err) {
+    console.error('Register error:', err);
     res.status(500).json({ error: err.message });
   }
 });
@@ -71,19 +72,19 @@ router.post('/login', [
     // Check if user exists
     let user = await User.findOne({ email });
     if (!user) {
-      return res.status(400).json({ msg: 'Invalid credentials' });
+      return res.status(400).json({ msg: 'Credenciales inválidas' });
     }
 
     // Check password
     const isPasswordValid = await user.comparePassword(password);
     if (!isPasswordValid) {
-      return res.status(400).json({ msg: 'Invalid credentials' });
+      return res.status(400).json({ msg: 'Credenciales inválidas' });
     }
 
     // Create JWT token
     const token = jwt.sign(
       { userId: user._id },
-      process.env.JWT_SECRET,
+      process.env.JWT_SECRET || 'default_secret',
       { expiresIn: '7d' }
     );
 
@@ -98,6 +99,7 @@ router.post('/login', [
       }
     });
   } catch (err) {
+    console.error('Login error:', err);
     res.status(500).json({ error: err.message });
   }
 });
